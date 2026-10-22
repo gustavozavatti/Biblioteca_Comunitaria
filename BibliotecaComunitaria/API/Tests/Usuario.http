@@ -1,0 +1,10 @@
+### CRIAR USUARIO
+POST http://localhost:5257/api/usuario/cadastrar
+Content-Type: application/json
+
+{
+    "NomeUsuario": "Bruna Cardoso",
+    "CPF": "810.683.090-08"
+}
+### BUSCAR USUARIO
+GET http://localhost:5257/api/usuario/buscar/Bruna Cardoso
