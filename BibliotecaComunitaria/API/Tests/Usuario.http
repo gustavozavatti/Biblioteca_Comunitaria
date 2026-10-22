@@ -8,3 +8,6 @@ Content-Type: application/json
 }
 ### BUSCAR USUARIO
 GET http://localhost:5257/api/usuario/buscar/Bruna Cardoso
+
+### DELETAR USUARIO.
+DELETE http://localhost:5257/api/usuario/deletar/810.683.090-08

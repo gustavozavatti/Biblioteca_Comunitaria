@@ -27,7 +27,7 @@ app.MapPost("/api/usuario/cadastrar", ([FromBody] Usuario? usuario, [FromService
     return Results.Created("", usuario);
 });
 
-//GET:  http://localhost:5257/api/usuario/buscar/nome_usuario
+//GET: http://localhost:5257/api/usuario/buscar/nome_usuario
 app.MapGet("/api/usuario/buscar/{nome}", ([FromRoute] string nome, [FromServices] AppDataContext ctx) =>
 {
     Usuario? usuarioEncontrado = ctx.Usuarios
@@ -46,6 +46,22 @@ app.MapGet("/api/usuario/buscar/{nome}", ([FromRoute] string nome, [FromServices
 
     return Results.NotFound("Usuário não encontrado");
     
+});
+
+//DELETE: http://localhost:5257/api/usuario/deletar/cpf_usuario
+app.MapDelete("/api/usuario/deletar/{cpf}", ([FromRoute] string cpf, [FromServices] AppDataContext ctx) => 
+{
+    Usuario? usuarioDeletar = ctx.Usuarios.FirstOrDefault(usuario => usuario.CPF == cpf);
+
+    if(usuarioDeletar != null)
+    {
+        ctx.Usuarios.Remove(usuarioDeletar);
+        ctx.SaveChanges();
+        return Results.Ok("Usuário deletado com sucesso!");
+    }
+
+    return Results.NotFound("Usuário não encontrado");
+
 });
 
 app.Run();
