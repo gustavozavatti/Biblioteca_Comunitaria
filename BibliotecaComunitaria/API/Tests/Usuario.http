@@ -11,3 +11,15 @@ GET http://localhost:5257/api/usuario/buscar/Bruna Cardoso
 
 ### DELETAR USUARIO.
 DELETE http://localhost:5257/api/usuario/deletar/810.683.090-08
+
+### CADASTRAR LIVRO
+POST http://localhost:5257/api/livro/cadastrar/4ddff50f-1258-41b8-a50f-4214c9bd8e1c
+Content-Type: application/json
+
+{
+    "Nome": "Dom Casmurro",
+    "Autor": "Machado de Assis"
+}
+
+### LISTAR LIVROS
+GET http://localhost:5257/api/livro/listar

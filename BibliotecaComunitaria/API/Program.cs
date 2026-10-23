@@ -64,4 +64,36 @@ app.MapDelete("/api/usuario/deletar/{cpf}", ([FromRoute] string cpf, [FromServic
 
 });
 
+//POST: http://localhost:5257/api/livro/cadastrar/id_usuario
+app.MapPost("/api/livro/cadastrar/{idUsuario}", ([FromRoute] string idUsuario, [FromBody] Livro? livro, [FromServices] AppDataContext ctx) =>
+{
+    if (livro == null)
+        return Results.BadRequest("Livro inválido");
+
+    if(string.IsNullOrWhiteSpace(livro.Nome) || string.IsNullOrWhiteSpace(livro.Autor))
+        return Results.BadRequest("Preencha todos os campos obrigatórios.");
+    
+    if (ctx.Livros.FirstOrDefault(l => l.Nome == livro.Nome && l.Autor == livro.Autor) != null)
+        return Results.Conflict("Esse livro já foi cadastrado");
+    
+    Usuario? usuario = ctx.Usuarios.FirstOrDefault(u => u.Id == idUsuario);
+
+    if (usuario == null)
+        return Results.NotFound("Usuário não encontrado");
+
+    livro.DisponibilizadoPor = usuario.NomeUsuario;
+
+    ctx.Livros.Add(livro);
+    ctx.SaveChanges();
+    return Results.Created("", livro);
+});
+
+//GET: http://localhost:5257/api/livro/listar
+app.MapGet("/api/livro/listar", ([FromServices] AppDataContext ctx) => {
+    if(ctx.Livros.Any())
+        return Results.Ok(ctx.Livros.ToList());
+    
+    return Results.NotFound("Lista de livros vazia!");
+});
+
 app.Run();
