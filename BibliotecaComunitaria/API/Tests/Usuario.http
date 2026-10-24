@@ -23,3 +23,18 @@ Content-Type: application/json
 
 ### LISTAR LIVROS
 GET http://localhost:5257/api/livro/listar
+
+### BUSCAR LIVRO
+GET http://localhost:5257/api/livro/buscar/Memórias Postumas
+
+### ALTERAR LIVRO
+PUT http://localhost:5257/api/livro/alterar/id_usuario/id_livro
+Content-Type: application/json
+
+{
+    "Nome": "Memórias Postumas",
+    "Autor": "Machado de Assis"
+}
+
+### DELETAR LIVRO
+DELETE http://localhost:5257/api/livro/deletar/id_usuario/id_livro

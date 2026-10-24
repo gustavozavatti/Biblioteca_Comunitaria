@@ -96,4 +96,79 @@ app.MapGet("/api/livro/listar", ([FromServices] AppDataContext ctx) => {
     return Results.NotFound("Lista de livros vazia!");
 });
 
+//GET: http://localhost:5257/api/livro/buscar/nome_livro
+app.MapGet("/api/livro/buscar/{nome}", ([FromRoute] string nome, [FromServices] AppDataContext ctx) =>
+{
+    Livro? livroBuscar = ctx.Livros.FirstOrDefault(x => x.Nome == nome);
+
+    if(livroBuscar == null)
+        return Results.NotFound("Livro não encontrado!");
+
+    return Results.Ok(livroBuscar);
+});
+
+//PUT: http://localhost:5257/api/livro/alterar/id_usuario/id_livro
+app.MapPut("/api/livro/alterar/{idUsuario}/{idLivro}", ([FromRoute] string idUsuario,[FromRoute] string idLivro, [FromBody] Livro? livroAlterado, [FromServices] AppDataContext ctx) =>
+{
+    Usuario? usuario = ctx.Usuarios.FirstOrDefault(u => u.Id == idUsuario);
+
+    if (usuario == null)
+        return Results.NotFound("Usuário inválido");
+
+    Livro? livro = ctx.Livros.FirstOrDefault(l => l.Id == idLivro);
+
+    if (livro == null)
+        return Results.NotFound("Livro não encontrado");
+
+    if (livroAlterado == null)
+        return Results.BadRequest("Livro inválido");
+
+    if (livro.DisponibilizadoPor != usuario.NomeUsuario)
+        return Results.BadRequest("Você não tem permissão para alterar este livro.");
+
+    if (string.IsNullOrWhiteSpace(livroAlterado.Nome) || string.IsNullOrWhiteSpace(livroAlterado.Autor))
+        return Results.BadRequest("Preencha todos os campos obrigatórios.");
+
+    if (ctx.Livros.FirstOrDefault(l => l.Nome == livroAlterado.Nome && l.Autor == livroAlterado.Autor && l.Id != idLivro) != null)
+    return Results.Conflict("Esse livro já foi cadastrado");
+
+    livro.Nome = livroAlterado.Nome;
+    livro.Autor = livroAlterado.Autor;
+
+    ctx.SaveChanges();
+
+    return Results.Ok(livro);
+});
+
+//DELETE: http://localhost:5257/api/livro/deletar/id_usuario/id_livro
+app.MapDelete("/api/livro/deletar/{idUsuario}/{idLivro}", ([FromRoute] string idUsuario, [FromRoute] string idLivro, [FromServices] AppDataContext ctx) =>
+{
+    Usuario? usuario = ctx.Usuarios.FirstOrDefault(u => u.Id == idUsuario);
+
+    if (usuario == null)
+        return Results.NotFound("Usuário inválido");
+
+    Livro? livroDeletar = ctx.Livros.FirstOrDefault(l => l.Id == idLivro);
+
+    if (livroDeletar == null)
+        return Results.NotFound("Livro não encontrado");
+
+    if (livroDeletar.DisponibilizadoPor != usuario.NomeUsuario)
+        return Results.BadRequest("Você não tem permissão para excluir este livro.");
+
+    if (!livroDeletar.Disponivel)
+        return Results.BadRequest("Não é possível excluir um livro emprestado.");
+
+    ctx.Livros.Remove(livroDeletar);
+    ctx.SaveChanges();
+    return Results.Ok("Livro deletado com sucesso!");
+
+});
+
+
+
+
 app.Run();
+
+
+
