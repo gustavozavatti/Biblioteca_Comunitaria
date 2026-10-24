@@ -38,3 +38,9 @@ Content-Type: application/json
 
 ### DELETAR LIVRO
 DELETE http://localhost:5257/api/livro/deletar/id_usuario/id_livro
+
+### EMPRESTAR LIVRO
+PUT http://localhost:5257/api/livro/emprestar/id_usuario/id_livro
+
+### DEVOLVER LIVRO
+PUT http://localhost:5257/api/livro/devolver/ec379cbb-c714-47f5-9fab-a905efc0d870/d953c816-89f7-47ef-a40f-72fcefebfbc2

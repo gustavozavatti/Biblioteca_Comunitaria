@@ -165,7 +165,65 @@ app.MapDelete("/api/livro/deletar/{idUsuario}/{idLivro}", ([FromRoute] string id
 
 });
 
+//PUT:http://localhost:5257/api/livro/emprestar/id_usuario/id_livro
+app.MapPut("/api/livro/emprestar/{idUsuario}/{idLivro}", ([FromRoute] string idUsuario, [FromRoute] string idLivro, [FromServices] AppDataContext ctx) =>
+{
+    Usuario? usuario = ctx.Usuarios.Find(idUsuario);
 
+    if (usuario == null)
+        return Results.NotFound("Usuário não encontrado.");
+
+    Livro? livro = ctx.Livros.Find(idLivro);
+
+    if (livro == null)
+        return Results.NotFound("Livro não encontrado.");
+
+    if (!livro.Disponivel)
+        return Results.BadRequest("Livro já está emprestado.");
+
+    if (livro.DisponibilizadoPor == usuario.NomeUsuario)
+        return Results.BadRequest("Você não pode emprestar um livro que você mesmo disponibilizou.");
+
+    usuario.Livros.Add(livro);
+    livro.UsuarioId = idUsuario;
+    livro.Disponivel = false;
+
+    ctx.SaveChanges();
+
+    return Results.Ok("Livro emprestado com sucesso.");
+
+});
+
+//PUT:http://localhost:5257/api/livro/devolver/id_usuario/id_livro
+app.MapPut("/api/livro/devolver/{idUsuario}/{idLivro}", ([FromRoute] string idUsuario, [FromRoute] string idLivro, [FromServices] AppDataContext ctx) =>
+{
+    Usuario? usuario = ctx.Usuarios.Find(idUsuario);
+
+    if (usuario == null){
+        return Results.NotFound("Usuário não encontrado.");
+    }
+
+    Livro? livro = ctx.Livros.Find(idLivro);
+ 
+    if (livro == null){
+        return Results.NotFound("Livro não encontrado.");
+    }
+
+    if (livro.Disponivel){
+        return Results.BadRequest("Livro não está emprestado.");
+    }
+
+    if (livro.UsuarioId != idUsuario){
+        return Results.BadRequest("Este livro não está emprestado para você.");
+    }
+
+    livro.UsuarioId = null;
+    livro.Disponivel = true;
+ 
+    ctx.SaveChanges();
+ 
+    return Results.Ok("Livro devolvido com sucesso.");
+});
 
 
 app.Run();
