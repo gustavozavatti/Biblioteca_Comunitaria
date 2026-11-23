@@ -1,6 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options => {
+    options.AddPolicy("AcessoTotal", policy => {
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
 builder.Services.AddDbContext<AppDataContext>();
 var app = builder.Build();
 
@@ -225,8 +230,5 @@ app.MapPut("/api/livro/devolver/{idUsuario}/{idLivro}", ([FromRoute] string idUs
     return Results.Ok("Livro devolvido com sucesso.");
 });
 
-
+app.UseCors("AcessoTotal");
 app.Run();
-
-
-
