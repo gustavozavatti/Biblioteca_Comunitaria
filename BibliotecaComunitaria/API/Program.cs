@@ -230,5 +230,26 @@ app.MapPut("/api/livro/devolver/{idUsuario}/{idLivro}", ([FromRoute] string idUs
     return Results.Ok("Livro devolvido com sucesso.");
 });
 
+app.MapPost("/api/usuario/login", ([FromBody] Usuario usuarioLogin, [FromServices] AppDataContext ctx) =>
+{
+    if (string.IsNullOrWhiteSpace(usuarioLogin.NomeUsuario) || string.IsNullOrWhiteSpace(usuarioLogin.CPF)){
+        return Results.BadRequest("Preencha todos os campos.");
+    }
+
+    Usuario? usuario = ctx.Usuarios.FirstOrDefault(u =>
+        u.NomeUsuario == usuarioLogin.NomeUsuario &&
+        u.CPF == usuarioLogin.CPF);
+
+    if (usuario == null){
+        return Results.NotFound("Usuário não encontrado. Verifique seus dados.");
+    }
+
+    return Results.Ok(new
+    {
+        usuario.Id,
+        usuario.NomeUsuario
+    });
+});
+
 app.UseCors("AcessoTotal");
 app.Run();
