@@ -68,7 +68,7 @@ function ListarLivros() {
                                     📖
                                 </div>
 
-                                <span className={livro-status ${livro.disponivel ? "disponivel" : "emprestado"}}>
+                                <span className={`livro-status ${livro.disponivel ? "disponivel" : "emprestado"}`}>
                                     <span className="livro-status-dot"></span>
                                     {livro.disponivel ? "Disponível" : "Emprestado"}
                                 </span>

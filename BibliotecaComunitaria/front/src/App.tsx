@@ -4,6 +4,7 @@ import BuscarUsuario from './BuscarUsuario';
 import DeletarUsuario from './DeletarUsuario';
 import CadastrarLivro from './CadastrarLivro';
 import ListarLivros from './ListarLivros';
+import Login from './Login';
 
 function App() {
   return (
