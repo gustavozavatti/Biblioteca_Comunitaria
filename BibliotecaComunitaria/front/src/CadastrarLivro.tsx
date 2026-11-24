@@ -15,7 +15,7 @@ function CadastrarLivro() {
             }
 
             const resposta = await fetch(
-                `http://localhost:5175/api/livro/cadastrar/${encodeURIComponent(usuarioId)}`,
+                `http://localhost:5257/api/livro/cadastrar/${encodeURIComponent(usuarioId)}`,
                 {
                     method: "POST",
                     headers: {

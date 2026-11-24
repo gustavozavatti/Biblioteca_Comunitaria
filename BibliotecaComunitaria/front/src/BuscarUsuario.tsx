@@ -9,7 +9,7 @@ function BuscarUsuario() {
     async function buscarUsuario() {
         try {
             const resposta = await fetch(
-                `http://localhost:5175/api/usuario/buscar/${encodeURIComponent(nomeBusca)}`
+                `http://localhost:5257/api/usuario/buscar/${encodeURIComponent(nomeBusca)}`
             );
 
             if (!resposta.ok) {

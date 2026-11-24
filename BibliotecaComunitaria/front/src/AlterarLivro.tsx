@@ -16,7 +16,7 @@ function AlterarLivro() {
             }
 
             const resposta = await fetch(
-                `http://localhost:5175/api/livro/alterar/${encodeURIComponent(usuarioId)}/${encodeURIComponent(idLivro)}`,
+                `http://localhost:5257/api/livro/alterar/${encodeURIComponent(usuarioId)}/${encodeURIComponent(idLivro)}`,
                 {
                     method: "PUT",
                     headers: {

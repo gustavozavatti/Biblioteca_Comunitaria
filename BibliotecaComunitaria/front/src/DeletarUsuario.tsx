@@ -7,7 +7,7 @@ function DeletarUsuario() {
     async function deletarUsuario() {
         try {
             const resposta = await fetch(
-                `http://localhost:5175/api/usuario/deletar/${encodeURIComponent(cpf)}`,
+                `http://localhost:5257/api/usuario/deletar/${encodeURIComponent(cpf)}`,
                 {
                     method: "DELETE"
                 }

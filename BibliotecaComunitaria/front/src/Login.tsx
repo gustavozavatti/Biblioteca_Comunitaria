@@ -26,7 +26,7 @@ function Login() {
     async function fazerLogin() {
         try {
             const resposta = await fetch(
-                "http://localhost:5175/api/usuario/login",
+                "http://localhost:5257/api/usuario/login",
                 {
                     method: "POST",
                     headers: {

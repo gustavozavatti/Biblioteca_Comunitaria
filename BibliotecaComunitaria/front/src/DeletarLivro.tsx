@@ -27,7 +27,7 @@ function DeletarLivro() {
             }
 
             const resposta = await fetch(
-                `http://localhost:5175/api/livro/deletar/${encodeURIComponent(usuarioId)}/${encodeURIComponent(idLivro)}`,
+                `http://localhost:5257/api/livro/deletar/${encodeURIComponent(usuarioId)}/${encodeURIComponent(idLivro)}`,
                 {
                     method: "DELETE"
                 }

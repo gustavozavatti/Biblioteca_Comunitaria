@@ -9,7 +9,7 @@ function BuscarLivro() {
     async function buscarLivro() {
         try {
             const resposta = await fetch(
-                'http://localhost:5175/api/livro/buscar/${encodeURIComponent(nome)}'
+                `http://localhost:5257/api/livro/buscar/${encodeURIComponent(nome)}`
             );
 
             if (!resposta.ok) {

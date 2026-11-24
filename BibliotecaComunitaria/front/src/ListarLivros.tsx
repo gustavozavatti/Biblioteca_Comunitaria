@@ -9,7 +9,7 @@ function ListarLivros() {
         async function buscarLivros() {
             try {
                 const resposta = await fetch(
-                    "http://localhost:5175/api/livro/listar"
+                    "http://localhost:5257/api/livro/listar"
                 );
 
                 if (!resposta.ok) {

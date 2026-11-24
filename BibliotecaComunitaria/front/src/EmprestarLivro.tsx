@@ -19,7 +19,7 @@ function EmprestarLivro() {
             }
 
             const resposta = await fetch(
-                `http://localhost:5175/api/livro/emprestar/${encodeURIComponent(usuarioId)}/${encodeURIComponent(idLivro)}`,
+                `http://localhost:5257/api/livro/emprestar/${encodeURIComponent(usuarioId)}/${encodeURIComponent(idLivro)}`,
                 {
                     method: "PUT"
                 }

@@ -12,7 +12,7 @@ function CadastrarUsuario() {
 
     async function cadastrar() {
         try {
-            const resposta = await fetch("http://localhost:5175/api/usuario/cadastrar", {
+            const resposta = await fetch("http://localhost:5257/api/usuario/cadastrar", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
