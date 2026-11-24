@@ -5,6 +5,10 @@ import DeletarUsuario from './DeletarUsuario';
 import CadastrarLivro from './CadastrarLivro';
 import ListarLivros from './ListarLivros';
 import Login from './Login';
+import BuscarLivro from './BuscarLivro';
+import AlterarLivro from './AlterarLivro';
+import DeletarLivro from './DeletarLivro';
+import EmprestarLivro from './EmprestarLivro';
 
 function App() {
   return (
@@ -16,6 +20,11 @@ function App() {
       <DeletarUsuario />
       <CadastrarLivro />
       <ListarLivros />
+      <BuscarLivro />
+      <AlterarLivro />
+      <DeletarLivro />
+      <EmprestarLivro />
+
     </div>
   );
 }
