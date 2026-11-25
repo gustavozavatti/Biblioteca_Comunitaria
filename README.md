@@ -12,11 +12,16 @@
 
 ## 2. Resumo
 
-A Biblioteca Comunitária tem como objetivo democratizar o acesso à leitura, conectando pessoas e incentivando o compartilhamento de livros em diferentes localidades do Brasil. A aplicação consiste em uma API desenvolvida em C# com ASP.NET Core, utilizando o SQLite para armazenar os dados dos usuários e dos livros, e o Entity Framework Core para realizar a comunicação com o banco de dados. O projeto aplica operações CRUD (criação, consulta, atualização e exclusão), validações de dados e relacionamentos entre entidades. Além disso, disponibiliza funcionalidades para o gerenciamento de usuários, o cadastro de livros e o controle de empréstimos e devoluções.
+A Biblioteca Comunitária tem como objetivo democratizar o acesso à leitura, conectando pessoas e incentivando o compartilhamento de livros em diferentes localidades do Brasil. A aplicação consiste em uma API desenvolvida em C# com ASP.NET Core, utilizando o SQLite para armazenar os dados dos usuários e dos livros, e o Entity Framework Core para realizar a comunicação com o banco de dados.
+
+O projeto aplica operações CRUD (criação, consulta, atualização e exclusão), validações de dados e relacionamentos entre entidades. Além disso, disponibiliza funcionalidades para o gerenciamento de usuários, o cadastro de livros e o controle de empréstimos e devoluções.
+
+A aplicação também possui uma interface gráfica desenvolvida com React e TypeScript, permitindo que os usuários interajam com as funcionalidades disponibilizadas pela API.
 
 ## 3. Funcionalidades
 
 - Cadastro de usuários.
+- Login de usuários utilizando nome de usuário e CPF.
 - Consulta de usuários pelo nome.
 - Exclusão de usuários por CPF.
 - Cadastro de livros.
@@ -31,6 +36,7 @@ A Biblioteca Comunitária tem como objetivo democratizar o acesso à leitura, co
 - Verificação de registros duplicados.
 - Controle de permissões para alteração e exclusão de livros.
 - Verificação da disponibilidade dos livros para empréstimo.
+- Interface gráfica para interação com as funcionalidades da aplicação.
 
 ## 4. Descrição das Funcionalidades
 
@@ -48,7 +54,7 @@ Possibilita excluir usuários por meio do CPF informado. A API verifica se exist
 
 ### 4.4. Cadastro de Livros
 
-Permite cadastrar novos livros no banco de dados. Durante o processo, a aplicação verifica se o objeto recebido é válido, se existem informações obrigatórias não preenchidas, se o livro já está cadastrado e se o usuário responsável pela operação existe. Após a aprovação das validações, o livro é registrado e associado ao usuário que o disponibilizou.
+Permite cadastrar novos livros no banco de dados. Durante o processo, a aplicação verifica se o objeto recebido é válido, se existem informações obrigatórias não preenchidas, se o livro já está cadastrado e se o usuário responsável pela operação existe. Após a aprovação das validações, o livro é registrado, armazenando o nome do usuário responsável por disponibilizar a obra na biblioteca.
 
 ### 4.5. Listagem e Busca de Livros
 
@@ -64,39 +70,52 @@ Antes de executar a operação, a API verifica se os registros existem e se os d
 
 Permite realizar o empréstimo e a devolução de livros cadastrados na biblioteca. Para isso, a aplicação identifica o usuário e o livro por meio de seus respectivos IDs.
 
-Durante o processo, são realizadas verificações para confirmar se o usuário e o livro existem, se o livro já está emprestado e se o usuário que disponibilizou a obra está tentando realizar o empréstimo do próprio livro. Essas validações ajudam a manter a consistência das operações e o controle da disponibilidade dos livros.
+Durante o processo, são realizadas verificações para confirmar se o usuário e o livro existem, se o livro já está emprestado e se o usuário que disponibilizou a obra está tentando realizar o empréstimo do próprio livro.
+
+Quando o empréstimo é realizado, o ID do usuário que recebeu o livro é associado ao registro da obra, e sua disponibilidade é alterada para falso. Na devolução, a aplicação verifica se o livro está emprestado para o usuário informado. Caso a verificação seja aprovada, o relacionamento do empréstimo é removido e o livro volta a ficar disponível.
+
+### 4.8. Login de Usuários
+
+Permite que usuários cadastrados acessem a aplicação utilizando o nome de usuário e o CPF. A API verifica se os campos foram preenchidos e procura um registro que corresponda às duas informações fornecidas.
+
+Caso os dados sejam encontrados, o sistema retorna o ID e o nome de usuário, permitindo o acesso às funcionalidades da aplicação. Caso contrário, retorna uma mensagem informando que o usuário não foi encontrado.
 
 ## 5. Banco de Dados e Relacionamento entre Entidades
 
 A aplicação utiliza o SQLite para armazenar os dados e o Entity Framework Core para realizar o mapeamento das entidades e as operações de persistência.
 
-O banco de dados possui duas entidades principais: Usuario e Livro. O relacionamento entre elas é do tipo *um para muitos (1:N)*, no qual um usuário pode estar relacionado a vários livros disponibilizados na biblioteca.
+O banco de dados possui duas entidades principais: Usuario e Livro. O relacionamento entre elas é do tipo *um para muitos (1:N)*, no qual um usuário pode estar relacionado a vários livros emprestados.
 
 ### 5.1. Entidade Usuario
 
 | Campo | Descrição |
 |---|---|
-| Id | Identificador único do usuário. |
+| Id | Identificador único do usuário, gerado automaticamente. |
 | CPF | CPF utilizado para identificar o usuário. |
-| DataCadastro | Data de cadastro do usuário. |
+| DataCadastro | Data de cadastro do usuário, preenchida automaticamente. |
 | NomeUsuario | Nome de usuário utilizado na aplicação. |
+| Livros | Lista de livros relacionados ao usuário por meio dos empréstimos. |
 
 ### 5.2. Entidade Livro
 
 | Campo | Descrição |
 |---|---|
-| Id | Identificador único do livro. |
+| Id | Identificador único do livro, gerado automaticamente. |
 | Nome | Nome ou título do livro. |
 | Autor | Nome do autor da obra. |
 | Disponivel | Indica se o livro está disponível para empréstimo. |
-| UsuarioId | Identificador do usuário relacionado ao livro. |
+| UsuarioId | Identificador do usuário que está com o livro emprestado. |
 | DisponibilizadoPor | Nome do usuário que disponibilizou o livro na biblioteca. |
 
 ### 5.3. Funcionamento do Relacionamento
 
-O relacionamento entre usuários e livros permite identificar quem disponibilizou cada obra na biblioteca comunitária. A propriedade UsuarioId estabelece a associação entre as entidades, enquanto DisponibilizadoPor registra o nome do usuário responsável pela disponibilização.
+O relacionamento entre usuários e livros permite identificar os empréstimos realizados na biblioteca comunitária. A propriedade UsuarioId estabelece a associação entre as entidades, identificando o usuário que está atualmente com determinado livro.
 
-Essa estrutura permite organizar os livros, consultar os dados relacionados e aplicar regras de autorização para determinadas operações, como a alteração das informações de uma obra.
+Já a propriedade DisponibilizadoPor registra o nome do usuário responsável por disponibilizar a obra na biblioteca.
+
+Dessa forma, um usuário pode estar relacionado a vários livros por meio dos empréstimos realizados. Quando um livro é devolvido, o UsuarioId é definido como nulo, removendo a associação do empréstimo e permitindo que a obra fique disponível novamente.
+
+Essa estrutura permite organizar os livros, consultar os dados relacionados e aplicar regras de autorização para determinadas operações, como a alteração e a exclusão de uma obra.
 
 ## 6. Validações e Integridade dos Dados
 
@@ -110,8 +129,11 @@ A aplicação possui diversas validações para evitar registros inválidos e pr
 | *Livros duplicados* | Verifica se o livro já está cadastrado antes de permitir um novo registro. |
 | *Existência dos registros* | Confirma se o usuário ou o livro existe antes de executar determinadas operações. |
 | *Permissões de alteração* | Verifica se o usuário possui autorização para alterar o livro. |
+| *Permissões de exclusão* | Verifica se o usuário possui autorização para excluir o livro. |
 | *Disponibilidade para empréstimo* | Verifica se o livro está disponível antes de permitir o empréstimo. |
 | *Exclusão de livros emprestados* | Verifica se o livro está emprestado antes de permitir sua exclusão. |
+| *Validação de devolução* | Verifica se o livro está emprestado e se pertence ao usuário que está solicitando a devolução. |
+| *Validação de login* | Verifica se o nome de usuário e o CPF correspondem a um cadastro existente. |
 
 Essas validações contribuem para a confiabilidade da aplicação, reduzem inconsistências nos dados e ajudam a garantir que as operações sejam executadas conforme as regras definidas no sistema.
 
@@ -119,10 +141,13 @@ Essas validações contribuem para a confiabilidade da aplicação, reduzem inco
 
 | Tecnologia | Finalidade |
 |---|---|
-| *C#* | Linguagem utilizada no desenvolvimento da aplicação. |
+| *C#* | Linguagem utilizada no desenvolvimento da API. |
 | *ASP.NET Core* | Framework utilizado para desenvolver a API. |
 | *Entity Framework Core* | Responsável pelo mapeamento das entidades e pela comunicação com o banco de dados. |
 | *SQLite* | Banco de dados utilizado para armazenar as informações. |
+| *React* | Biblioteca utilizada para desenvolver a interface gráfica da aplicação. |
+| *TypeScript* | Linguagem utilizada no desenvolvimento dos componentes da interface. |
+| *CSS* | Utilizado para estilizar a interface gráfica. |
 | *Git* | Ferramenta utilizada para controle de versão. |
 | *GitHub* | Plataforma utilizada para hospedar o repositório e colaborar no desenvolvimento do projeto. |
 
@@ -148,4 +173,4 @@ A Inteligência Artificial foi utilizada como ferramenta de apoio na elaboraçã
 
 ### 9.3. Revisões Realizadas pela Equipe
 
-A documentação deve ser revisada pela equipe para verificar se as informações apresentadas correspondem à implementação existente no código-fonte. Essa revisão inclui a conferência das funcionalidades, dos relacionamentos entre as entidades, das validações implementadas e das tecnologias utilizadas, além da correção de eventuais inconsistências e do preenchimento das informações de identificação e do link do repositório.
+A equipe realizou a revisão da documentação, verificando se as informações apresentadas estão de acordo com o código-fonte do projeto. Foram conferidas as descrições das funcionalidades, os relacionamentos entre as entidades, as validações e as tecnologias utilizadas, buscando garantir que o conteúdo represente corretamente a aplicação desenvolvida.
